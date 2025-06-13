@@ -11,6 +11,13 @@ from sqlalchemy.ext.asyncio import (
 
 
 class SupabaseAsyncClient:
+    # Параметры подключения к базе данных
+    __db_user: str = os.getenv("DB_USER")
+    __db_password: str = os.getenv("DB_PASSWORD")
+    __db_name: str = os.getenv("DB_NAME")
+    __db_host: str = os.getenv("DB_HOST")
+    __db_port: str = os.getenv("DB_PORT")
+
     echo: bool = True
     echo_pool: bool = True
     pool_size: int = 15
@@ -123,13 +130,7 @@ class SupabaseAsyncClient:
 
     @property
     def DATABASE_URL(self) -> str:
-        SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
-        if not SUPABASE_DB_URL:
-            raise RuntimeError(
-                "Set SUPABASE_DB_URL env var with full connection string"
-            )
-
-        return SUPABASE_DB_URL
+        return f"postgresql+asyncpg://{self.__db_user}:{self.__db_password}@{self.__db_host}:{self.__db_port}/{self.__db_name}"
 
 
 supabase_client = SupabaseAsyncClient()
